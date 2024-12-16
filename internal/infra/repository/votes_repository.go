@@ -4,11 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"victo/wynnguardian/internal/domain/entity"
 	"victo/wynnguardian/internal/domain/repository"
 	"victo/wynnguardian/internal/infra/db"
-	"victo/wynnguardian/internal/infra/enums"
-	"victo/wynnguardian/pkg/uow"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/enums"
+	"github.com/wynnguardian/common/uow"
 
 	"github.com/victorbetoni/go-streams/streams"
 )

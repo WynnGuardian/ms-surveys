@@ -3,12 +3,14 @@ package usecase
 import (
 	"context"
 	"database/sql"
-	"victo/wynnguardian/internal/domain/entity"
-	opt "victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/enums"
-	"victo/wynnguardian/internal/infra/repository"
-	"victo/wynnguardian/pkg/uow"
+
+	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/common/uow"
+	"github.com/wynnguardian/ms-surveys/internal/infra/enums"
+	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
 type ConfirmVoteCaseInput struct {

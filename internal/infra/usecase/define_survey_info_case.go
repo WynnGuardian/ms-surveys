@@ -3,11 +3,14 @@ package usecase
 import (
 	"context"
 	"net/http"
-	opt "victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/repository"
-	"victo/wynnguardian/internal/infra/util"
-	"victo/wynnguardian/pkg/uow"
+
+	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/common/uow"
+	util "github.com/wynnguardian/common/utils"
+	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
 type DefineSurveyInfoCaseInput struct {
@@ -43,7 +46,7 @@ func (u *DefineSurveyInfoCase) Execute(ctx context.Context, in DefineSurveyInfoC
 			return response.ErrInternalServerErr(err)
 		}
 
-		return response.New(http.StatusOK, "", *survey[0])
+		return response.New[entity.Survey](http.StatusOK, "", *survey[0])
 	})
 
 }

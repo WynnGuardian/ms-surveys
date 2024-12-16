@@ -2,7 +2,8 @@ package repository
 
 import (
 	"context"
-	"victo/wynnguardian/internal/domain/entity"
+
+	"github.com/wynnguardian/common/entity"
 )
 
 type RepositoryInterface interface {
@@ -35,21 +36,6 @@ type VoteEntryFindOptions struct {
 	Page       uint16
 }
 
-type AuthenticatedItemRepositoryInterface interface {
-	FindFirst(ctx context.Context, id string) (*entity.AuthenticatedItem, error)
-	FindAllWithItem(ctx context.Context, name string) ([]*entity.AuthenticatedItem, error)
-	Create(ctx context.Context, item *entity.AuthenticatedItem) error
-}
-
-type WynnItemRepositoryInterface interface {
-	Find(ctx context.Context, name string) (*entity.WynnItem, error)
-}
-
-type CriteriaRepositoryInterface interface {
-	Find(ctx context.Context, name string) (*entity.ItemCriteria, error)
-	Update(ctx context.Context, crit *entity.ItemCriteria) error
-}
-
 type SurveyRepositoryInterface interface {
 	Create(ctx context.Context, survey *entity.Survey) error
 	Find(ctx context.Context, opt SurveyFindOptions) ([]*entity.Survey, error)
@@ -71,9 +57,4 @@ type VoteEntriesRepositoryInterface interface {
 	Find(ctx context.Context, opt VoteEntryFindOptions) ([]*entity.SurveyVoteEntry, error)
 	Create(ctx context.Context, entry *entity.SurveyVoteEntry) error
 	SumStat(ctx context.Context, survey, statId string, status int) (float64, error)
-}
-
-type GenRepositoryInterface interface {
-	GenItemDB(ctx context.Context)
-	GenDefaultScales(ctx context.Context) error
 }

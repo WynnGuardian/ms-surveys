@@ -3,11 +3,14 @@ package usecase
 import (
 	"context"
 	"net/http"
-	opt "victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/repository"
-	"victo/wynnguardian/internal/infra/util"
-	"victo/wynnguardian/pkg/uow"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/response"
+
+	"github.com/wynnguardian/common/uow"
+	util "github.com/wynnguardian/common/utils"
+	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
+	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
 type DefineVoteMessageCaseInput struct {
@@ -43,6 +46,6 @@ func (u *DefineVoteMessageCase) Execute(ctx context.Context, in DefineVoteMessag
 			return response.ErrInternalServerErr(err)
 		}
 
-		return response.New(http.StatusOK, "", *vote[0])
+		return response.New[entity.SurveyVote](http.StatusOK, "", *vote[0])
 	})
 }

@@ -2,10 +2,11 @@ package usecase
 
 import (
 	"context"
-	"victo/wynnguardian/internal/domain/entity"
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/repository"
-	"victo/wynnguardian/pkg/uow"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/common/uow"
+	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
 type AutoCloseSurveysCase struct {
