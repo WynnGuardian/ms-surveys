@@ -13,6 +13,6 @@ RUN npm install npm@latest -g && \
 RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 RUN go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.15.2
 
-EXPOSE 8084
+EXPOSE 8086
 
 CMD ["tail", "-f", "/dev/null"]

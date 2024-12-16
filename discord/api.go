@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
+
+	"github.com/wynnguardian/ms-surveys/internal/config"
 )
 
 type apiResponse struct {
@@ -14,11 +15,11 @@ type apiResponse struct {
 }
 
 func newCall(endpoint string) string {
-	return fmt.Sprintf("%s/%s", os.Getenv("DISCORD_SERVER_URL"), endpoint)
+	return fmt.Sprintf("%s/%s", config.MainConfig.Private.Tokens.Self, endpoint)
 }
 
 func defaultHeaders(req *http.Request) {
-	req.Header.Add("Authorization", os.Getenv("DISCORD_SERVER_TOKEN"))
+	req.Header.Add("Authorization", config.MainConfig.Private.Tokens.Self)
 }
 
 func post[T any](path string, body *T) (*apiResponse, error) {
