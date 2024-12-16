@@ -4,14 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/infra/db"
-	"victo/wynnguardian/internal/infra/enums"
 
-	"github.com/wynnguardian/common/entity"
-	"github.com/wynnguardian/common/enums"
+	"github.com/wynnguardian/ms-surveys/internal/domain/repository"
 
 	"github.com/victorbetoni/go-streams/streams"
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/enums"
+	"github.com/wynnguardian/ms-surveys/internal/infra/db"
 )
 
 type SurveyRepository struct {

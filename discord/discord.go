@@ -2,7 +2,8 @@ package discord
 
 import (
 	"errors"
-	"victo/wynnguardian/internal/domain/entity"
+
+	"github.com/wynnguardian/common/entity"
 )
 
 func NotifySurveyVote(vote *entity.SurveyVote) error {

@@ -1,6 +1,6 @@
 package discord
 
-import "victo/wynnguardian/internal/domain/entity"
+import "github.com/wynnguardian/common/entity"
 
 var discordServer discordInternalServerInterface
 

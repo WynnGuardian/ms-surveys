@@ -7,9 +7,9 @@ import (
 	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
 
 	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/enums"
 	"github.com/wynnguardian/common/response"
 	"github.com/wynnguardian/common/uow"
-	"github.com/wynnguardian/ms-surveys/internal/infra/enums"
 	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 

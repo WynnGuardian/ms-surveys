@@ -7,11 +7,11 @@ import (
 	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 
 	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/enums"
 	"github.com/wynnguardian/common/response"
 	"github.com/wynnguardian/common/uow"
 	util "github.com/wynnguardian/common/utils"
 	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
-	"github.com/wynnguardian/ms-surveys/internal/infra/enums"
 )
 
 type FindSurveyWithCriteriaCaseInput struct {

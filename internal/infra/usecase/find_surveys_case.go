@@ -51,7 +51,7 @@ func (u *FindSurveysCase) Execute(ctx context.Context, in FindSurveysCaseInput) 
 			return util.NotFoundOrInternalErr(err, response.ErrSurveyNotFound)
 		}
 
-		return response.New[[]entity.Survey](http.StatusOK, "", surveys)
+		return response.New[[]*entity.Survey](http.StatusOK, "", surveys)
 	})
 
 }

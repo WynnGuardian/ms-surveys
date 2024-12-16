@@ -2,14 +2,15 @@ package usecase
 
 import (
 	"context"
-	"victo/wynnguardian/internal/domain/entity"
-	opt "victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/discord"
-	"victo/wynnguardian/internal/infra/enums"
-	"victo/wynnguardian/internal/infra/repository"
-	"victo/wynnguardian/internal/infra/util"
-	"victo/wynnguardian/pkg/uow"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/enums"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/common/uow"
+	util "github.com/wynnguardian/common/utils"
+	"github.com/wynnguardian/ms-surveys/discord"
+	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
+	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
 type SurveyVoteCaseInput struct {

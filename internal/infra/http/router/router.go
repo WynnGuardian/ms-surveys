@@ -1,27 +1,23 @@
 package router
 
 import (
-	"victo/wynnguardian/internal/infra/http/handlers"
-	"victo/wynnguardian/internal/infra/http/middleware"
-	"victo/wynnguardian/internal/infra/util"
-
 	"github.com/gin-gonic/gin"
+	"github.com/wynnguardian/common/handlerfunc"
+	middleware "github.com/wynnguardian/common/middlewares"
+	"github.com/wynnguardian/ms-surveys/internal/infra/http/handlers"
 )
 
 type RouterEntry struct {
 	MustBeMod bool
-	Handler   util.HandlerFunc
+	Handler   handlerfunc.HandlerFunc
 	Path      string
 	Method    string
 }
 
 var (
 	entries = []RouterEntry{
-		{Path: "/itemWeigh", MustBeMod: false, Method: "POST", Handler: handlers.WeightItem},
-		{Path: "/itemAuth", MustBeMod: true, Method: "POST", Handler: handlers.AuthItem},
 		{Path: "/surveyCreate", MustBeMod: true, Method: "POST", Handler: handlers.OpenSurvey},
 		{Path: "/findOpenSurvey", MustBeMod: false, Method: "POST", Handler: handlers.FindSurvey},
-		{Path: "/findCriteria", MustBeMod: false, Method: "POST", Handler: handlers.FindCriteria},
 		{Path: "/sendVote", MustBeMod: false, Method: "POST", Handler: handlers.SendVote},
 		{Path: "/createVote", MustBeMod: false, Method: "POST", Handler: handlers.CreateVote},
 		{Path: "/defineSurveyInfo", MustBeMod: false, Method: "POST", Handler: handlers.DefineSurveyInfo},
@@ -34,7 +30,7 @@ var (
 	}
 )
 
-func post(engine *gin.Engine, path string, handler util.HandlerFunc) {
+func post(engine *gin.Engine, path string, handler handlerfunc.HandlerFunc) {
 	engine.POST(path, middleware.Parse(handler))
 }
 

@@ -3,8 +3,9 @@ package scheduler
 import (
 	"context"
 	"time"
-	"victo/wynnguardian/internal/infra/usecase"
-	"victo/wynnguardian/pkg/uow"
+
+	"github.com/wynnguardian/common/uow"
+	"github.com/wynnguardian/ms-surveys/internal/infra/usecase"
 )
 
 func StartTrackingSurveys(ctx context.Context, u *uow.Uow) chan struct{} {

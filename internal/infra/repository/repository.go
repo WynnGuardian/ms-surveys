@@ -3,10 +3,10 @@ package repository
 import (
 	"context"
 	"errors"
-	"victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/infra/db"
 
 	"github.com/wynnguardian/common/uow"
+	"github.com/wynnguardian/ms-surveys/internal/domain/repository"
+	"github.com/wynnguardian/ms-surveys/internal/infra/db"
 )
 
 var ErrQueriesNotSet = errors.New("queries not set")
@@ -24,6 +24,14 @@ func (r *Repository) Validate() error {
 		return ErrQueriesNotSet
 	}
 	return nil
+}
+
+func GetItemCriteriaRepository(ctx context.Context, u *uow.Uow) repository.CriteriaRepositoryInterface {
+	return getRepository[repository.CriteriaRepositoryInterface](ctx, u, "CriteriaRepository")
+}
+
+func GetWynnItemRepository(ctx context.Context, u *uow.Uow) repository.WynnItemRepositoryInterface {
+	return getRepository[repository.WynnItemRepositoryInterface](ctx, u, "WynnItemRepository")
 }
 
 func GetSurveyRepository(ctx context.Context, u *uow.Uow) repository.SurveyRepositoryInterface {

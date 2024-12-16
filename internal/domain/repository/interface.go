@@ -36,6 +36,15 @@ type VoteEntryFindOptions struct {
 	Page       uint16
 }
 
+type CriteriaRepositoryInterface interface {
+	Find(ctx context.Context, name string) (*entity.ItemCriteria, error)
+	Update(ctx context.Context, crit *entity.ItemCriteria) error
+}
+
+type WynnItemRepositoryInterface interface {
+	Find(ctx context.Context, name string) (*entity.WynnItem, error)
+}
+
 type SurveyRepositoryInterface interface {
 	Create(ctx context.Context, survey *entity.Survey) error
 	Find(ctx context.Context, opt SurveyFindOptions) ([]*entity.Survey, error)

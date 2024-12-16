@@ -3,13 +3,14 @@ package usecase
 import (
 	"context"
 	"time"
-	"victo/wynnguardian/internal/domain/entity"
-	opt "victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/enums"
-	"victo/wynnguardian/internal/infra/repository"
-	"victo/wynnguardian/internal/infra/util"
-	"victo/wynnguardian/pkg/uow"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/enums"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/common/uow"
+	"github.com/wynnguardian/common/utils"
+	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
+	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
 type VoteCreateCaseInput struct {
@@ -47,10 +48,10 @@ func (u *VoteCreateCase) Execute(ctx context.Context, in VoteCreateCaseInput) re
 		}
 		survey, err := repo.Find(ctx, opt)
 		if err != nil {
-			return util.NotFoundOrInternalErr(err, response.ErrSurveyNotFound)
+			return utils.NotFoundOrInternalErr(err, response.ErrSurveyNotFound)
 		}
 
-		token := util.GenNanoId(24)
+		token := utils.GenVoteToken()
 		vote := &entity.SurveyVote{
 			Survey:        survey[0],
 			DiscordUserID: in.UserID,

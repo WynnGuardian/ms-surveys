@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-	"victo/wynnguardian/internal/domain/entity"
-	opt "victo/wynnguardian/internal/domain/repository"
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/enums"
-	"victo/wynnguardian/internal/infra/repository"
-	"victo/wynnguardian/internal/infra/util"
-	"victo/wynnguardian/pkg/uow"
+
+	"github.com/wynnguardian/common/entity"
+	"github.com/wynnguardian/common/enums"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/common/uow"
+	"github.com/wynnguardian/common/utils"
+	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
+	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
 type SurveyOpenCaseInput struct {
@@ -64,7 +65,7 @@ func (u *SurveyOpenCase) Execute(ctx context.Context, in SurveyOpenCaseInput) re
 				nil)
 		}
 
-		id := util.GenNanoId(10)
+		id := utils.GenSurveyId()
 
 		survey := &entity.Survey{
 			ID:                    id,

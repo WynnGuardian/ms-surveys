@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"victo/wynnguardian/internal/domain/response"
-	"victo/wynnguardian/internal/infra/usecase"
-	"victo/wynnguardian/pkg/uow"
-
 	"github.com/gin-gonic/gin"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/common/uow"
+	"github.com/wynnguardian/ms-surveys/internal/infra/usecase"
 )
 
 func FindSurvey(ctx *gin.Context) response.WGResponse {
@@ -101,4 +100,12 @@ func DiscardSurvey(ctx *gin.Context) response.WGResponse {
 		return response.ErrBadRequest
 	}
 	return usecase.NewSurveyDiscardCase(uow.Current()).Execute(ctx, input)
+}
+
+func OpenSurvey(ctx *gin.Context) response.WGResponse {
+	input := usecase.SurveyOpenCaseInput{}
+	if err := ctx.BindJSON(&input); err != nil {
+		return response.ErrBadRequest
+	}
+	return usecase.NewSurveyOpenCase(uow.Current()).Execute(ctx, input)
 }
