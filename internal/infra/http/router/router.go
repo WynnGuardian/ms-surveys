@@ -1,8 +1,6 @@
 package router
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/wynnguardian/common/handlerfunc"
 	middleware "github.com/wynnguardian/common/middlewares"
@@ -68,7 +66,6 @@ func Authorization(hf handlerfunc.HandlerFunc) handlerfunc.HandlerFunc {
 		whitelist := config.MainConfig.Private.Tokens.Whitelist
 		for _, w := range whitelist {
 			if w == ctx.GetHeader("Authorization") {
-				fmt.Println("passoy")
 				return hf(ctx)
 			}
 		}

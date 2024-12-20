@@ -56,14 +56,16 @@ func (u *VoteCreateCase) Execute(ctx context.Context, in VoteCreateCaseInput) re
 		voteOpts := opt.VoteFindOptions{
 			UserId:   in.UserID,
 			SurveyId: survey[0].ID,
+			Limit:    1,
+			Page:     1,
 		}
 
 		foundVote, err := voteRepo.Find(ctx, voteOpts)
 		if err == nil {
-			return response.New(200, "", foundVote)
+			return response.New(200, "", foundVote[0])
 		}
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != sql.ErrNoRows {
 			return response.ErrInternalServerErr(err)
 		}
 
