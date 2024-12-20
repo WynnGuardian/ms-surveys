@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/wynnguardian/common/entity"
@@ -40,15 +41,30 @@ func (u *VoteCreateCase) Execute(ctx context.Context, in VoteCreateCaseInput) re
 		voteRepo := repository.GetVotesRepository(ctx, uow)
 
 		open := enums.SURVEY_OPEN
-		opt := opt.SurveyFindOptions{
+		svOpt := opt.SurveyFindOptions{
 			ItemName: in.Item,
 			Status:   int8(open),
 			Limit:    1,
 			Page:     1,
 		}
-		survey, err := repo.Find(ctx, opt)
+
+		survey, err := repo.Find(ctx, svOpt)
 		if err != nil {
 			return utils.NotFoundOrInternalErr(err, response.ErrSurveyNotFound)
+		}
+
+		voteOpts := opt.VoteFindOptions{
+			UserId:   in.UserID,
+			SurveyId: survey[0].ID,
+		}
+
+		foundVote, err := voteRepo.Find(ctx, voteOpts)
+		if err == nil {
+			return response.New(200, "", foundVote)
+		}
+
+		if err != nil && err != sql.ErrNoRows {
+			return response.ErrInternalServerErr(err)
 		}
 
 		token := utils.GenVoteToken()

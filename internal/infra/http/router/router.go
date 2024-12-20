@@ -1,9 +1,13 @@
 package router
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wynnguardian/common/handlerfunc"
 	middleware "github.com/wynnguardian/common/middlewares"
+	"github.com/wynnguardian/common/response"
+	"github.com/wynnguardian/ms-surveys/internal/config"
 	"github.com/wynnguardian/ms-surveys/internal/infra/http/handlers"
 )
 
@@ -38,7 +42,7 @@ func Build() *gin.Engine {
 	engine := gin.Default()
 	engine.Use(func(c *gin.Context) {
 		c.Header("Content-Type", "application/json")
-		c.Header("Access-Control-Allow-Origin", "http://guardian_proxy:8090")
+		c.Header("Access-Control-Allow-Origin", "http://proxy:8088,http://bot:8087")
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Header("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
@@ -49,15 +53,25 @@ func Build() *gin.Engine {
 
 		c.Next()
 	})
+
 	for _, entry := range entries {
 		switch entry.Method {
 		case "POST":
-			if entry.MustBeMod {
-				post(engine, entry.Path, middleware.CheckOrigin(middleware.Authorize(entry.Handler)))
-			} else {
-				post(engine, entry.Path, middleware.CheckOrigin(entry.Handler))
-			}
+			post(engine, entry.Path, Authorization(entry.Handler))
 		}
 	}
 	return engine
+}
+
+func Authorization(hf handlerfunc.HandlerFunc) handlerfunc.HandlerFunc {
+	return func(ctx *gin.Context) response.WGResponse {
+		whitelist := config.MainConfig.Private.Tokens.Whitelist
+		for _, w := range whitelist {
+			if w == ctx.GetHeader("Authorization") {
+				fmt.Println("passoy")
+				return hf(ctx)
+			}
+		}
+		return response.ErrUnauthorized
+	}
 }
