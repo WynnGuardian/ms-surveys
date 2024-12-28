@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
+	"net/http"
 	"time"
 
 	"github.com/wynnguardian/common/entity"
@@ -39,6 +40,11 @@ func (u *VoteCreateCase) Execute(ctx context.Context, in VoteCreateCaseInput) re
 	return u.Uow.Do(ctx, func(uow *uow.Uow) response.WGResponse {
 		repo := repository.GetSurveyRepository(ctx, uow)
 		voteRepo := repository.GetVotesRepository(ctx, uow)
+		surveyBanRepo := repository.GetSurveyBanRepository(ctx, uow)
+
+		if _, err := surveyBanRepo.Find(ctx, in.UserID); err == nil {
+			return response.New[any](http.StatusForbidden, "You are banned from surveys.", nil)
+		}
 
 		open := enums.SURVEY_OPEN
 		svOpt := opt.SurveyFindOptions{

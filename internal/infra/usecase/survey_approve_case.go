@@ -70,6 +70,14 @@ func (u *SurveyApproveCase) Execute(ctx context.Context, in SurveyApproveCaseInp
 			return response.ErrInternalServerErr(err)
 		}
 
-		return response.New(http.StatusOK, "Survey canceled successfully", *surv[0])
+		resp := struct {
+			Survey entity.Survey       `json:"survey"`
+			Result entity.SurveyResult `json:"result"`
+		}{
+			Survey: *surv[0],
+			Result: *result,
+		}
+
+		return response.New(http.StatusOK, "Survey approved successfully", resp)
 	})
 }

@@ -63,7 +63,13 @@ type VoteRepositoryInterface interface {
 }
 
 type VoteEntriesRepositoryInterface interface {
-	Find(ctx context.Context, opt VoteEntryFindOptions) ([]*entity.SurveyVoteEntry, error)
+	Find(ctx context.Context, survey, user string) ([]*entity.SurveyVoteEntry, error)
 	Create(ctx context.Context, entry *entity.SurveyVoteEntry) error
 	SumStat(ctx context.Context, survey, statId string, status int) (float64, error)
+}
+
+type SurveyBansRepositoryInterface interface {
+	Find(ctx context.Context, userId string) (string, error)
+	Create(ctx context.Context, userId, reason string) error
+	Remove(ctx context.Context, userId string) error
 }

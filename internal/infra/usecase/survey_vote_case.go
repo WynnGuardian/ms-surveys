@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/wynnguardian/common/entity"
 	"github.com/wynnguardian/common/enums"
@@ -49,6 +50,11 @@ func (u *SurveyVoteCase) Execute(ctx context.Context, in SurveyVoteCaseInput) re
 			return util.NotFoundOrInternalErr(err, response.ErrVoteNotFound)
 		}
 
+		_, err = entriesRepo.Find(ctx, vote[0].Survey.ID, vote[0].DiscordUserID)
+		if err == nil {
+			return response.New(http.StatusUnauthorized, "You already voted in this survey.", "{}")
+		}
+
 		survey, err := repo.Find(ctx, opt.SurveyFindOptions{Id: vote[0].Survey.ID, Limit: 1, Page: 1})
 		if err != nil {
 			return util.NotFoundOrInternalErr(err, response.ErrSurveyNotFound)
@@ -74,10 +80,10 @@ func (u *SurveyVoteCase) Execute(ctx context.Context, in SurveyVoteCaseInput) re
 			}
 			stats[id] = in.Votes[id] / 100
 			if err := entriesRepo.Create(ctx, &entity.SurveyVoteEntry{
-				Survey: vote[0].Survey,
-				UserID: vote[0].DiscordUserID,
-				Stat:   id,
-				Value:  stats[id],
+				SurveyID: id,
+				UserID:   vote[0].DiscordUserID,
+				Stat:     id,
+				Value:    stats[id],
 			}); err != nil {
 				return response.ErrInternalServerErr(err)
 			}

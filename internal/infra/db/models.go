@@ -42,6 +42,11 @@ type WgSurvey struct {
 	Deadline              time.Time `json:"deadline"`
 }
 
+type WgSurveyban struct {
+	Userid string `json:"userid"`
+	Reason string `json:"reason"`
+}
+
 type WgVote struct {
 	Messageid string    `json:"messageid"`
 	Userid    string    `json:"userid"`

@@ -78,3 +78,8 @@ CREATE TABLE IF NOT EXISTS WG_VoteEntries (
     PRIMARY KEY (SurveyId, UserId, StatId),
     FOREIGN KEY (SurveyId) REFERENCES WG_Surveys (Id)
 );
+
+CREATE TABLE IF NOT EXISTS WG_SurveyBan(
+    UserID VARCHAR(20) PRIMARY KEY,
+    Reason VARCHAR(256) NOT NULL
+);

@@ -31,24 +31,9 @@ UPDATE WG_Votes SET MessageId = ?, Status = ? WHERE SurveyId = ? AND UserId = ?;
 
 -- name: FindVoteEntries :many
 SELECT
-WG_Surveys.Id AS SurveyId,
-WG_Surveys.ChannelID AS SurveyChannel,
-WG_Surveys.AnnouncementMessageID,
-WG_Surveys.ItemName,
-WG_Surveys.OpenedAt,
-WG_Surveys.Deadline,
-WG_Surveys.Status AS SurveyStatus,
-WG_VoteEntries.UserId,
-WG_VoteEntries.StatId,
-WG_VoteEntries.Value
+*
 FROM WG_VoteEntries
-INNER JOIN WG_Votes ON WG_Votes.UserId = WG_VoteEntries.UserId AND WG_Votes.SurveyId = WG_VoteEntries.SurveyId
-INNER JOIN WG_Surveys ON WG_Surveys.Id = WG_Votes.SurveyId
-WHERE (sqlc.arg(status) = 0 OR WG_Votes.Status = sqlc.arg(status)) 
-AND (sqlc.arg(SurveyId) = "" OR WG_Votes.SurveyId LIKE sqlc.arg(SurveyOpt))
-AND (sqlc.arg(UserId) = "" OR WG_Votes.UserId LIKE sqlc.arg(IdOpt))
-AND (sqlc.arg(Token) = "" OR WG_Votes.Token LIKE sqlc.arg(TokenOpt))
-LIMIT ? OFFSET ?;
+WHERE SurveyId = ? AND UserId = ?;
 
 -- name: SumTotalVotes :one
 SELECT COUNT(UserId) FROM WG_Votes WHERE SurveyId = ? AND Status != 0;

@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"database/sql"
 
 	opt "github.com/wynnguardian/ms-surveys/internal/domain/repository"
 
@@ -13,23 +12,23 @@ import (
 	"github.com/wynnguardian/ms-surveys/internal/infra/repository"
 )
 
-type ConfirmVoteCaseInput struct {
+type DenyVoteCaseInput struct {
 	Token     string `json:"token"`
 	MessageID string `json:"message_id"`
 	ChannelID string `json:"channel_id"`
 }
 
-type ConfirmVoteCase struct {
+type DenyVoteCase struct {
 	Uow uow.UowInterface
 }
 
-func NewConfirmVoteCase(uow uow.UowInterface) *ConfirmVoteCase {
-	return &ConfirmVoteCase{
+func NewDenyVoteCase(uow uow.UowInterface) *DenyVoteCase {
+	return &DenyVoteCase{
 		Uow: uow,
 	}
 }
 
-func (u *ConfirmVoteCase) Execute(ctx context.Context, in ConfirmVoteCaseInput) response.WGResponse {
+func (u *DenyVoteCase) Execute(ctx context.Context, in DenyVoteCaseInput) response.WGResponse {
 	return u.Uow.Do(ctx, func(uow *uow.Uow) response.WGResponse {
 		repo := repository.GetVotesRepository(ctx, uow)
 
@@ -40,22 +39,15 @@ func (u *ConfirmVoteCase) Execute(ctx context.Context, in ConfirmVoteCaseInput) 
 		}
 
 		vote, err := repo.Find(ctx, opts)
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil {
 			return response.ErrInternalServerErr(err)
 		}
 
-		if err == nil {
-			if vote[0].Status != enums.VOTE_NOT_CONFIRMED {
-				return response.ErrVoteAlreadyConfirmed
-			}
-		}
-
-		vote[0].Status = enums.VOTE_CONTABILIZED
+		vote[0].Status = enums.VOTE_DENIED
 
 		if err := repo.Update(ctx, vote[0]); err != nil {
 			return response.ErrInternalServerErr(err)
 		}
-
 		return response.New[entity.SurveyVote](200, "", *vote[0])
 	})
 }

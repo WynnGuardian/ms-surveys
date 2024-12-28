@@ -59,14 +59,17 @@ func (v *VotesRepository) Find(ctx context.Context, options repository.VoteFindO
 	}
 
 	return *streams.Map(streams.StreamOf(votes...), func(vote db.FindVoteRow) *entity.SurveyVote {
-
 		votes := make(map[string]float64, 0)
 		if entries, err := v.Queries.FindVoteEntries(ctx, db.FindVoteEntriesParams{
-			Surveyid: vote.Surveyid, Userid: vote.Userid,
+			Surveyid: vote.Surveyid,
+			Userid:   vote.Userid,
 		}); err == nil {
 			for _, entry := range entries {
+				fmt.Println(entry)
 				votes[entry.Statid] = entry.Value
 			}
+		} else {
+			fmt.Println(err.Error())
 		}
 
 		return &entity.SurveyVote{
@@ -143,8 +146,7 @@ func (v *VotesRepository) FindResult(ctx context.Context, survey string) (*entit
 	}
 
 	return &entity.SurveyResult{
-		SurveyID:   survey,
-		ItemName:   surv.ItemName,
+		Survey:     surv,
 		TotalVotes: total,
 		Results:    weights,
 	}, nil

@@ -29,6 +29,9 @@ var (
 		{Path: "/cancelSurvey", MustBeMod: true, Method: "POST", Handler: handlers.CancelSurvey},
 		{Path: "/approveSurvey", MustBeMod: true, Method: "POST", Handler: handlers.ApproveSurvey},
 		{Path: "/discardSurvey", MustBeMod: true, Method: "POST", Handler: handlers.DiscardSurvey},
+		{Path: "/unbanSurvey", MustBeMod: true, Method: "POST", Handler: handlers.UnbanSurvey},
+		{Path: "/banSurvey", MustBeMod: true, Method: "POST", Handler: handlers.BanSurvey},
+		{Path: "/denyVote", MustBeMod: true, Method: "POST", Handler: handlers.DenyVote},
 	}
 )
 

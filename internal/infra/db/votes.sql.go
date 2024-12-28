@@ -10,6 +10,22 @@ import (
 	"time"
 )
 
+const alreadyVoted = `-- name: AlreadyVoted :one
+SELECT SurveyId FROM WG_VoteEntries WHERE SurveyId = ? AND UserId = ?
+`
+
+type AlreadyVotedParams struct {
+	Surveyid string `json:"surveyid"`
+	Userid   string `json:"userid"`
+}
+
+func (q *Queries) AlreadyVoted(ctx context.Context, arg AlreadyVotedParams) (string, error) {
+	row := q.db.QueryRowContext(ctx, alreadyVoted, arg.Surveyid, arg.Userid)
+	var surveyid string
+	err := row.Scan(&surveyid)
+	return surveyid, err
+}
+
 const createVote = `-- name: CreateVote :exec
 INSERT INTO WG_Votes (SurveyId, UserId, Token, MessageId, Status, VotedAt) VALUES (?,?,?,?,?,?)
 `
@@ -212,79 +228,27 @@ func (q *Queries) FindVote(ctx context.Context, arg FindVoteParams) ([]FindVoteR
 
 const findVoteEntries = `-- name: FindVoteEntries :many
 SELECT
-WG_Surveys.Id AS SurveyId,
-WG_Surveys.ChannelID AS SurveyChannel,
-WG_Surveys.AnnouncementMessageID,
-WG_Surveys.ItemName,
-WG_Surveys.OpenedAt,
-WG_Surveys.Deadline,
-WG_Surveys.Status AS SurveyStatus,
-WG_VoteEntries.UserId,
-WG_VoteEntries.StatId,
-WG_VoteEntries.Value
+surveyid, userid, statid, value
 FROM WG_VoteEntries
-INNER JOIN WG_Votes ON WG_Votes.UserId = WG_VoteEntries.UserId AND WG_Votes.SurveyId = WG_VoteEntries.SurveyId
-INNER JOIN WG_Surveys ON WG_Surveys.Id = WG_Votes.SurveyId
-WHERE (? = 0 OR WG_Votes.Status = ?) 
-AND (? = "" OR WG_Votes.SurveyId LIKE ?)
-AND (? = "" OR WG_Votes.UserId LIKE ?)
-AND (? = "" OR WG_Votes.Token LIKE ?)
-LIMIT ? OFFSET ?
+WHERE SurveyId = ? AND UserId = ?
 `
 
 type FindVoteEntriesParams struct {
-	Status    int8        `json:"status"`
-	Surveyid  interface{} `json:"surveyid"`
-	Surveyopt string      `json:"surveyopt"`
-	Userid    interface{} `json:"userid"`
-	Idopt     string      `json:"idopt"`
-	Token     interface{} `json:"token"`
-	Tokenopt  string      `json:"tokenopt"`
-	Limit     int32       `json:"limit"`
-	Offset    int32       `json:"offset"`
+	Surveyid string `json:"surveyid"`
+	Userid   string `json:"userid"`
 }
 
-type FindVoteEntriesRow struct {
-	Surveyid              string    `json:"surveyid"`
-	Surveychannel         string    `json:"surveychannel"`
-	Announcementmessageid string    `json:"announcementmessageid"`
-	Itemname              string    `json:"itemname"`
-	Openedat              time.Time `json:"openedat"`
-	Deadline              time.Time `json:"deadline"`
-	Surveystatus          int8      `json:"surveystatus"`
-	Userid                string    `json:"userid"`
-	Statid                string    `json:"statid"`
-	Value                 float64   `json:"value"`
-}
-
-func (q *Queries) FindVoteEntries(ctx context.Context, arg FindVoteEntriesParams) ([]FindVoteEntriesRow, error) {
-	rows, err := q.db.QueryContext(ctx, findVoteEntries,
-		arg.Status,
-		arg.Status,
-		arg.Surveyid,
-		arg.Surveyopt,
-		arg.Userid,
-		arg.Idopt,
-		arg.Token,
-		arg.Tokenopt,
-		arg.Limit,
-		arg.Offset,
-	)
+func (q *Queries) FindVoteEntries(ctx context.Context, arg FindVoteEntriesParams) ([]WgVoteentry, error) {
+	rows, err := q.db.QueryContext(ctx, findVoteEntries, arg.Surveyid, arg.Userid)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []FindVoteEntriesRow
+	var items []WgVoteentry
 	for rows.Next() {
-		var i FindVoteEntriesRow
+		var i WgVoteentry
 		if err := rows.Scan(
 			&i.Surveyid,
-			&i.Surveychannel,
-			&i.Announcementmessageid,
-			&i.Itemname,
-			&i.Openedat,
-			&i.Deadline,
-			&i.Surveystatus,
 			&i.Userid,
 			&i.Statid,
 			&i.Value,
@@ -300,6 +264,50 @@ func (q *Queries) FindVoteEntries(ctx context.Context, arg FindVoteEntriesParams
 		return nil, err
 	}
 	return items, nil
+}
+
+const hasOpenVote = `-- name: HasOpenVote :one
+SELECT SurveyId, Token FROM WG_Votes WHERE SurveyId = ? AND UserId = ?
+`
+
+type HasOpenVoteParams struct {
+	Surveyid string `json:"surveyid"`
+	Userid   string `json:"userid"`
+}
+
+type HasOpenVoteRow struct {
+	Surveyid string `json:"surveyid"`
+	Token    string `json:"token"`
+}
+
+func (q *Queries) HasOpenVote(ctx context.Context, arg HasOpenVoteParams) (HasOpenVoteRow, error) {
+	row := q.db.QueryRowContext(ctx, hasOpenVote, arg.Surveyid, arg.Userid)
+	var i HasOpenVoteRow
+	err := row.Scan(&i.Surveyid, &i.Token)
+	return i, err
+}
+
+const isContabilized = `-- name: IsContabilized :one
+SELECT messageid, userid, surveyid, token, status, votedat FROM WG_Votes WHERE UserId = ? AND SurveyId = ? AND Status = 1
+`
+
+type IsContabilizedParams struct {
+	Userid   string `json:"userid"`
+	Surveyid string `json:"surveyid"`
+}
+
+func (q *Queries) IsContabilized(ctx context.Context, arg IsContabilizedParams) (WgVote, error) {
+	row := q.db.QueryRowContext(ctx, isContabilized, arg.Userid, arg.Surveyid)
+	var i WgVote
+	err := row.Scan(
+		&i.Messageid,
+		&i.Userid,
+		&i.Surveyid,
+		&i.Token,
+		&i.Status,
+		&i.Votedat,
+	)
+	return i, err
 }
 
 const sumStatEntries = `-- name: SumStatEntries :one

@@ -46,6 +46,10 @@ func GetVotesEntriesRepository(ctx context.Context, u *uow.Uow) repository.VoteE
 	return getRepository[repository.VoteEntriesRepositoryInterface](ctx, u, "VotesEntriesRepository")
 }
 
+func GetSurveyBanRepository(ctx context.Context, u *uow.Uow) repository.SurveyBansRepositoryInterface {
+	return getRepository[repository.SurveyBansRepositoryInterface](ctx, u, "SurveyBanRepository")
+}
+
 func getRepository[T repository.RepositoryInterface](ctx context.Context, u *uow.Uow, name string) T {
 	repo, err := u.GetRepository(ctx, name)
 	if err != nil {

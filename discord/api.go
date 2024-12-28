@@ -15,7 +15,7 @@ type apiResponse struct {
 }
 
 func newCall(endpoint string) string {
-	return fmt.Sprintf("%s/%s", config.MainConfig.Private.Tokens.Self, endpoint)
+	return fmt.Sprintf("%s/%s", config.MainConfig.Hosts.Discord, endpoint)
 }
 
 func defaultHeaders(req *http.Request) {
@@ -42,6 +42,7 @@ func post[T any](path string, body *T) (*apiResponse, error) {
 	defer res.Body.Close()
 
 	resp := apiResponse{}
+
 	derr := json.NewDecoder(res.Body).Decode(&resp)
 	if derr != nil {
 		return nil, derr

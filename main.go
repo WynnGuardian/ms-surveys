@@ -74,6 +74,12 @@ func registerRepositories(uow *uow.Uow) {
 		return repo
 	})
 
+	uow.Register("SurveyBanRepository", func(tx *sql.Tx) interface{} {
+		repo := repository.NewSurveyBanRepository(uow.Db)
+		repo.Queries = db.New(tx)
+		return repo
+	})
+
 	uow.Register("VotesEntriesRepository", func(tx *sql.Tx) interface{} {
 		repo := repository.NewVotesEntriesRepository(uow.Db)
 		repo.Queries = db.New(tx)

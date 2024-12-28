@@ -61,7 +61,7 @@ func (u *SurveyOpenCase) Execute(ctx context.Context, in SurveyOpenCaseInput) re
 		})
 		if err == nil && len(s) > 0 {
 			return response.New[any](http.StatusUnauthorized,
-				fmt.Sprintf("There is already a survey waiting approval for this item. Use ``/survey approve %s`` or ``/survey cancel %s`` before.", s[0].ID, s[0].ID),
+				fmt.Sprintf("There is already a survey waiting approval for this item. Use /survey approve %s or /survey cancel %s before.", s[0].ID, s[0].ID),
 				nil)
 		}
 

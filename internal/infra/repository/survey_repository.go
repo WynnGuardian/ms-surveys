@@ -53,7 +53,7 @@ func (s *SurveyRepository) Find(ctx context.Context, options repository.SurveyFi
 	}
 
 	if len(surveys) < 1 {
-		//return nil, sql.ErrNoRows
+		return nil, sql.ErrNoRows
 	}
 
 	return *streams.Map(streams.StreamOf(surveys...), func(t db.WgSurvey) *entity.Survey {

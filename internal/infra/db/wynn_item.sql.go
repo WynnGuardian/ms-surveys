@@ -9,22 +9,6 @@ import (
 	"context"
 )
 
-const alreadyVoted = `-- name: AlreadyVoted :one
-SELECT SurveyId FROM WG_VoteEntries WHERE SurveyId = ? AND UserId = ?
-`
-
-type AlreadyVotedParams struct {
-	Surveyid string `json:"surveyid"`
-	Userid   string `json:"userid"`
-}
-
-func (q *Queries) AlreadyVoted(ctx context.Context, arg AlreadyVotedParams) (string, error) {
-	row := q.db.QueryRowContext(ctx, alreadyVoted, arg.Surveyid, arg.Userid)
-	var surveyid string
-	err := row.Scan(&surveyid)
-	return surveyid, err
-}
-
 const clearWynnItemStats = `-- name: ClearWynnItemStats :exec
 DELETE FROM WG_WynnItemStats
 `
@@ -143,48 +127,4 @@ func (q *Queries) FindWynnItemStats(ctx context.Context, itemname string) ([]WgW
 		return nil, err
 	}
 	return items, nil
-}
-
-const hasOpenVote = `-- name: HasOpenVote :one
-SELECT SurveyId, Token FROM WG_Votes WHERE SurveyId = ? AND UserId = ?
-`
-
-type HasOpenVoteParams struct {
-	Surveyid string `json:"surveyid"`
-	Userid   string `json:"userid"`
-}
-
-type HasOpenVoteRow struct {
-	Surveyid string `json:"surveyid"`
-	Token    string `json:"token"`
-}
-
-func (q *Queries) HasOpenVote(ctx context.Context, arg HasOpenVoteParams) (HasOpenVoteRow, error) {
-	row := q.db.QueryRowContext(ctx, hasOpenVote, arg.Surveyid, arg.Userid)
-	var i HasOpenVoteRow
-	err := row.Scan(&i.Surveyid, &i.Token)
-	return i, err
-}
-
-const isContabilized = `-- name: IsContabilized :one
-SELECT messageid, userid, surveyid, token, status, votedat FROM WG_Votes WHERE UserId = ? AND SurveyId = ? AND Status = 1
-`
-
-type IsContabilizedParams struct {
-	Userid   string `json:"userid"`
-	Surveyid string `json:"surveyid"`
-}
-
-func (q *Queries) IsContabilized(ctx context.Context, arg IsContabilizedParams) (WgVote, error) {
-	row := q.db.QueryRowContext(ctx, isContabilized, arg.Userid, arg.Surveyid)
-	var i WgVote
-	err := row.Scan(
-		&i.Messageid,
-		&i.Userid,
-		&i.Surveyid,
-		&i.Token,
-		&i.Status,
-		&i.Votedat,
-	)
-	return i, err
 }

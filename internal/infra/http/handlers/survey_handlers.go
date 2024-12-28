@@ -109,3 +109,27 @@ func OpenSurvey(ctx *gin.Context) response.WGResponse {
 	}
 	return usecase.NewSurveyOpenCase(uow.Current()).Execute(ctx, input)
 }
+
+func BanSurvey(ctx *gin.Context) response.WGResponse {
+	input := usecase.SurveyBanCaseInput{}
+	if err := ctx.BindJSON(&input); err != nil {
+		return response.ErrBadRequest
+	}
+	return usecase.NewSurveyBanCase(uow.Current()).Execute(ctx, input)
+}
+
+func UnbanSurvey(ctx *gin.Context) response.WGResponse {
+	input := usecase.SurveyUnbanCaseInput{}
+	if err := ctx.BindJSON(&input); err != nil {
+		return response.ErrBadRequest
+	}
+	return usecase.NewSurveyUnbanCase(uow.Current()).Execute(ctx, input)
+}
+
+func DenyVote(ctx *gin.Context) response.WGResponse {
+	input := usecase.DenyVoteCaseInput{}
+	if err := ctx.BindJSON(&input); err != nil {
+		return response.ErrBadRequest
+	}
+	return usecase.NewDenyVoteCase(uow.Current()).Execute(ctx, input)
+}
