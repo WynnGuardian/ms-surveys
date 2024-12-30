@@ -80,7 +80,7 @@ func (u *SurveyVoteCase) Execute(ctx context.Context, in SurveyVoteCaseInput) re
 			}
 			stats[id] = in.Votes[id] / 100
 			if err := entriesRepo.Create(ctx, &entity.SurveyVoteEntry{
-				SurveyID: id,
+				SurveyID: survey[0].ID,
 				UserID:   vote[0].DiscordUserID,
 				Stat:     id,
 				Value:    stats[id],
